@@ -1,8 +1,19 @@
 from pathlib import Path
 
 import gradio as gr
+import spaces
 
-from slides_vqa.preprocess_video import split_video_into_chunks
+from slides_vqa.models import SmolVLM2
+from slides_vqa.preprocess_video import (
+    split_video_into_chunks,
+    extract_slide_timestamps,
+)
+
+
+@spaces.GPU()
+def slide_timestamps(chunks_dir: str):
+    model = SmolVLM2()
+    extract_slide_timestamps(model, chunks_dir)
 
 
 def process_video(input_video):
@@ -20,6 +31,9 @@ def process_video(input_video):
 
     n_chunks = len(list(output_dir.glob("*.mp4")))
     yield f"Split video into {n_chunks} chunks"
+
+    yield "Extracting slide timestamps..."
+    slide_timestamps(str(output_dir))
 
 
 with gr.Blocks() as demo:
