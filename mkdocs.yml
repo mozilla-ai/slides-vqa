@@ -1,6 +1,6 @@
-site_name: Guidance Docs
-repo_url: https://github.com/mozilla-ai/blueprint-template
-repo_name: blueprint-template
+site_name: Slides Visual Question Answering
+repo_url: https://github.com/mozilla-ai/slides-vqa
+repo_name: slides-vqa
 
 nav:
   - Home: index.md

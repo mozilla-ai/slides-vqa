@@ -25,7 +25,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: mzdotai/blueprint
+          images: mzdotai/slides-vqa
           flavor: |
             latest=auto
 
