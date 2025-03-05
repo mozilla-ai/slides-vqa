@@ -11,10 +11,13 @@ dynamic = ["version"]
 dependencies = [
   "ffmpeg-python",
   "loguru",
-  "streamlit",
 ]
 
 [project.optional-dependencies]
+demo = [
+  "gradio",
+]
+
 docs = [
   "mkdocs",
   "mkdocs-material",

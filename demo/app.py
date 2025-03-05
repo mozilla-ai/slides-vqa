@@ -1,21 +1,35 @@
-import tempfile
 from pathlib import Path
 
-import streamlit as st
+import gradio as gr
 
 from slides_vqa.preprocess_video import split_video_into_chunks
 
-st.title("Slides Visual Question Answering")
 
-input_video = st.file_uploader("Input Video", type="mp4")
+def process_video(input_video):
+    if input_video is None:
+        raise gr.Error("Please upload a video file.")
 
-if input_video:
-    output_dir = Path(f"/tmp/chunks/{Path(input_video.name).stem}")
+    input_video_path = Path(input_video)
+    output_dir = Path(f"/tmp/chunks/{input_video_path.stem}")
     output_dir.mkdir(parents=True, exist_ok=True)
-    with st.spinner("Splitting video into chunks..."):
-        with tempfile.NamedTemporaryFile(suffix=".mp4") as tmp_file:
-            tmp_file.write(input_video.read())
-            split_video_into_chunks(tmp_file.name, str(output_dir), 60)
+
+    try:
+        split_video_into_chunks(str(input_video_path), str(output_dir), 60)
+    except Exception as e:
+        raise gr.Error(f"Error processing video: {e}")
 
     n_chunks = len(list(output_dir.glob("*.mp4")))
-    st.success(f"Split video into {n_chunks} chunks")
+    yield f"Split video into {n_chunks} chunks"
+
+
+with gr.Blocks() as demo:
+    gr.Markdown("# Slides Visual Question Answering")
+    with gr.Row():
+        input_video = gr.Video(label="Input Video")
+    with gr.Row():
+        process_button = gr.Button("Process Video")
+    with gr.Row():
+        output_message = gr.Textbox(label="Output Message")
+    process_button.click(fn=process_video, inputs=input_video, outputs=output_message)
+
+demo.launch()
