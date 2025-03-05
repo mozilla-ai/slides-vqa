@@ -18,6 +18,7 @@ dependencies = [
 [project.optional-dependencies]
 demo = [
   "gradio",
+  "spaces",
 ]
 
 docs = [
