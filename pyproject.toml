@@ -12,7 +12,7 @@ dependencies = [
   "ffmpeg-python",
   "loguru",
   "num2words",
-  "git+https://github.com/huggingface/transformers@v4.49.0-SmolVLM-2",
+  "transformers@git+https://github.com/huggingface/transformers@v4.49.0-SmolVLM-2",
 ]
 
 [project.optional-dependencies]
