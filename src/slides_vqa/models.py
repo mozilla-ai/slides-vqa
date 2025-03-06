@@ -2,18 +2,19 @@ import os
 import time
 
 import google.generativeai as genai
-import torch
 from loguru import logger
 
 
 class SmolVLM2:
     def __init__(self, model_id: str = "HuggingFaceTB/SmolVLM2-500M-Video-Instruct"):
+        import torch
         from transformers import AutoProcessor, AutoModelForImageTextToText
 
+        self.dtype = torch.bfloat16
         self.processor = AutoProcessor.from_pretrained(model_id)
         self.model = AutoModelForImageTextToText.from_pretrained(
             model_id,
-            torch_dtype=torch.bfloat16,
+            torch_dtype=self.dtype,
         )
 
     def process_video(self, input_video: str, prompt: str):
@@ -32,7 +33,7 @@ class SmolVLM2:
             tokenize=True,
             return_dict=True,
             return_tensors="pt",
-        ).to(self.model.device, dtype=torch.bfloat16)
+        ).to(self.model.device, dtype=self.dtype)
         generated_ids = self.model.generate(**inputs, do_sample=False)
         generated_texts = self.processor.batch_decode(
             generated_ids,
