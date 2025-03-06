@@ -1,7 +1,9 @@
 import json
 from pathlib import Path
 
+import cv2
 import ffmpeg
+from loguru import logger
 
 from slides_vqa.config import SLIDE_TIMESTAMPS_PROMPT
 
@@ -33,10 +35,10 @@ def split_video_into_chunks(input_video: str, output_dir: str, chunk_seconds: in
         raise e
 
 
-def extract_slide_timestamps(
+def find_slide_timestamps(
     model, chunks_dir: str, slide_timestamps_prompt: str = SLIDE_TIMESTAMPS_PROMPT
 ):
-    """Identify and extract the timestamps of the slide changes in a chunk.
+    """Find the timestamps of the slide changes in a chunk.
 
     Process all chunks inside `chunks_dir`.
 
@@ -50,10 +52,11 @@ def extract_slide_timestamps(
     """
     chunks_dir = Path(chunks_dir)
     for chunk in chunks_dir.glob("*.mp4"):
+        yield f"Processing {chunk}"
         slide_timestamps = model.process_video(
             str(chunk), prompt=slide_timestamps_prompt
         )
-        (chunks_dir / f"{chunk.stem}.json").write_text(json.dumps(slide_timestamps))
+        (chunks_dir / f"{chunk.stem}.json").write_text(slide_timestamps)
 
 
 def time_to_seconds(time_str):
@@ -70,6 +73,7 @@ def seconds_to_time(total_seconds):
     return f"{minutes:02d}:{seconds:02d}"
 
 
+@logger.catch(reraise=True)
 def merge_timestamps(chunks_dir: str, chunk_seconds: int):
     """Joins timestamps from multiple JSON files into a single list.
 
@@ -118,3 +122,37 @@ def merge_timestamps(chunks_dir: str, chunk_seconds: int):
             merged_timestamps.append(merged_entry)
 
     return merged_timestamps
+
+
+def extract_slides(
+    input_video: str, merged_timestamps: dict, output_dir: str, offset: int = 0
+):
+    """Extract slides from `input_video` based on `merged_timestamps`.
+
+    Args:
+        input_video: Path to the input video file.
+        merged_timestamps: List of timestamps and slide information.
+        output_dir: Directory where the slides will be saved.
+        offset: Offset in seconds to add to the timestamp.
+
+    Returns:
+        A list of paths to the extracted slides.
+    """
+    cap = cv2.VideoCapture(input_video)
+
+    output_files = []
+    for slide in merged_timestamps:
+        timestamp_str = slide["timestamp"]
+        title = slide["title"]
+        output_file = f"{output_dir}/{timestamp_str} - {title}.jpg"
+        seconds = time_to_seconds(timestamp_str) + offset
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        frame_number = int(seconds * fps)
+        cap.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
+        _, frame = cap.read()
+
+        cv2.imwrite(output_file, frame)
+        output_files.append(output_file)
+
+    cap.release()
+    return output_files

@@ -1,7 +1,11 @@
 import json
+from pathlib import Path
 
-
-from slides_vqa.preprocess_video import split_video_into_chunks, merge_timestamps
+from slides_vqa.preprocess_video import (
+    extract_slides,
+    merge_timestamps,
+    split_video_into_chunks,
+)
 
 
 def test_split_video_into_chunks(example_data, tmp_path):
@@ -44,3 +48,28 @@ def test_merge_timestamps(tmp_path):
         {"timestamp": "00:06", "title": "Third slide", "description": "BAR."},
         {"timestamp": "00:10", "title": "Fourth slide", "description": "BAZ."},
     ]
+
+
+def test_extract_slides(example_data, tmp_path):
+    slides = extract_slides(
+        input_video=str(example_data / "The Transformer architecture.mp4"),
+        merged_timestamps=[
+            {
+                "timestamp": "00:03",
+                "title": "The Transformer architecture",
+                "description": "FOO.",
+            },
+            {
+                "timestamp": "00:33",
+                "title": "Attention Is All You Need",
+                "description": "BAR.",
+            },
+        ],
+        output_dir=tmp_path,
+    )
+    assert slides == [
+        str(tmp_path / "00:03 - The Transformer architecture.jpg"),
+        str(tmp_path / "00:33 - Attention Is All You Need.jpg"),
+    ]
+    for slide in slides:
+        assert Path(slide).exists()

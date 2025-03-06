@@ -10,12 +10,19 @@ requires-python = ">=3.10"
 dynamic = ["version"]
 dependencies = [
   "ffmpeg-python",
+  "google-generativeai",
   "loguru",
-  "num2words",
-  "transformers@git+https://github.com/huggingface/transformers@v4.49.0-SmolVLM-2",
+  "opencv-python",
+
 ]
 
 [project.optional-dependencies]
+local = [
+  "num2words",
+  "pyav",
+  "transformers@git+https://github.com/huggingface/transformers@v4.49.0-SmolVLM-2",
+]
+
 demo = [
   "gradio",
   "spaces",
