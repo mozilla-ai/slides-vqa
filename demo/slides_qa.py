@@ -1,17 +1,17 @@
 from pathlib import Path
+
 import gradio as gr
 import spaces
 
 from slides_vqa.models import SmolVLM2
 from slides_vqa.preprocess_presentation import extract_slides
 
-model = SmolVLM2()
-
 
 def process_presentation(input_presentation):
     if input_presentation is None:
         raise gr.Error("Please upload a presentation file.")
     output_dir = Path(f"/tmp/slides/{Path(input_presentation).stem}")
+    output_dir.mkdir(exist_ok=True, parents=True)
     slides = extract_slides(input_presentation, output_dir)
     return gr.update(value=slides, visible=True)
 
@@ -45,5 +45,6 @@ with gr.Blocks() as demo:
         outputs=[slides],
     )
 
-
-demo.launch()
+if __name__ == "__main__":
+    model = SmolVLM2()
+    demo.launch()

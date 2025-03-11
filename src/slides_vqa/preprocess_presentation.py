@@ -9,3 +9,4 @@ def extract_slides(input_presentation, output_dir):
         output_slide = f"{output_dir}/slide_{n}.png"
         pixmap.save(output_slide)
         slides.append(output_slide)
+    return slides
