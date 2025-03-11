@@ -8,7 +8,6 @@ class SmolVLM2:
         self.model = AutoModelForImageTextToText.from_pretrained(
             model_id,
             torch_dtype=torch.bfloat16,
-            _attn_implementation="flash_attention_2",
         ).to("cuda" if torch.cuda.is_available() else "cpu")
 
     def process_images(self, images: list[str], prompt: str):
