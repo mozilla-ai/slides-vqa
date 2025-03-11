@@ -9,7 +9,29 @@ class SmolVLM2:
             model_id,
             torch_dtype=torch.bfloat16,
             _attn_implementation="flash_attention_2",
+        ).to("cuda" if torch.cuda.is_available() else "cpu")
+
+    def process_images(self, images: list[str], prompt: str):
+        images = [{"type": "image", "image": image} for image in images]
+        messages = [
+            {
+                "role": "user",
+                "content": images + [{"type": "text", "text": prompt}],
+            },
+        ]
+        inputs = self.processor.apply_chat_template(
+            messages,
+            add_generation_prompt=True,
+            tokenize=True,
+            return_dict=True,
+            return_tensors="pt",
+        ).to(self.model.device, dtype=torch.bfloat16)
+        generated_ids = self.model.generate(**inputs, do_sample=False)
+        generated_texts = self.processor.batch_decode(
+            generated_ids,
+            skip_special_tokens=True,
         )
+        return generated_texts[0]
 
     def process_video(self, input_video: str, prompt: str):
         messages = [

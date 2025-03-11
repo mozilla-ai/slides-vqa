@@ -9,7 +9,7 @@
   </picture>
 </p>
 
-This blueprint guides you to ...
+This slides-vqa guides you to ...
 
 📘 To explore this project further and discover other Blueprints, visit the [**Blueprints Hub**](https://developer-hub.mozilla.ai/).
 

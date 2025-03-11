@@ -9,13 +9,20 @@ license = {text = "Apache-2.0"}
 requires-python = ">=3.10"
 dynamic = ["version"]
 dependencies = [
-  "ffmpeg-python",
+  "fire",
   "loguru",
+  "pdf2image",
   "num2words",
   "transformers@git+https://github.com/huggingface/transformers@v4.49.0-SmolVLM-2",
 ]
 
 [project.optional-dependencies]
+video = [
+  "ffmpeg-python",
+  "google-generativeai",
+  "opencv-python"
+]
+
 demo = [
   "gradio",
   "spaces",
