@@ -1,2 +1,1 @@
 slides-vqa @ git+https://github.com/mozilla-ai/slides-vqa@process-presentation
-python-poppler
