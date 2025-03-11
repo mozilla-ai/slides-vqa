@@ -11,8 +11,8 @@ dynamic = ["version"]
 dependencies = [
   "fire",
   "loguru",
-  "pdf2image",
   "num2words",
+  "PyMuPDF",
   "transformers@git+https://github.com/huggingface/transformers@v4.49.0-SmolVLM-2",
 ]
 

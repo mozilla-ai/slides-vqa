@@ -1,9 +1,9 @@
+from pathlib import Path
 import gradio as gr
 import spaces
-from pdf2image import convert_from_path
 
 from slides_vqa.models import SmolVLM2
-
+from slides_vqa.preprocess_presentation import extract_slides
 
 model = SmolVLM2()
 
@@ -11,9 +11,9 @@ model = SmolVLM2()
 def process_presentation(input_presentation):
     if input_presentation is None:
         raise gr.Error("Please upload a presentation file.")
-    slides = convert_from_path(input_presentation)
-    resized_slides = [slide.resize((640, 360)) for slide in slides]
-    return gr.update(value=resized_slides, visible=True)
+    output_dir = Path(f"/tmp/slides/{Path(input_presentation).stem}")
+    slides = extract_slides(input_presentation, output_dir)
+    return gr.update(value=slides, visible=True)
 
 
 @spaces.GPU
