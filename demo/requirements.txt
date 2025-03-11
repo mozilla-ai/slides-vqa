@@ -1,1 +1,1 @@
-git+https://github.com/mozilla-ai/slides-vqa.git
+slides-vqa @ git+https://github.com/mozilla-ai/slides-vqa@process-presentation
