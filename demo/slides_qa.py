@@ -12,9 +12,7 @@ def process_presentation(input_presentation):
     if input_presentation is None:
         raise gr.Error("Please upload a presentation file.")
     slides = convert_from_path(input_presentation)
-    resized_slides = [
-        slide.resize((640, 360)) for slide in slides
-    ]
+    resized_slides = [slide.resize((640, 360)) for slide in slides]
     return gr.update(value=resized_slides, visible=True)
 
 
@@ -46,7 +44,6 @@ with gr.Blocks() as demo:
         inputs=input_video,
         outputs=[slides],
     )
-
 
 
 demo.launch()

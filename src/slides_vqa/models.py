@@ -4,6 +4,7 @@ from transformers import AutoProcessor, AutoModelForImageTextToText
 
 from PIL import Image
 
+
 class SmolVLM2:
     def __init__(self, model_id: str = "HuggingFaceTB/SmolVLM2-500M-Video-Instruct"):
         self.processor = AutoProcessor.from_pretrained(model_id)
