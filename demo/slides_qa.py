@@ -46,5 +46,5 @@ with gr.Blocks() as demo:
     )
 
 if __name__ == "__main__":
-    model = SmolVLM2()
+    model = SmolVLM2("HuggingFaceTB/SmolVLM2-2.2B-Instruct")
     demo.launch()

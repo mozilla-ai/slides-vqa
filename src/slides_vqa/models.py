@@ -31,7 +31,9 @@ class SmolVLM2:
             return_tensors="pt",
         ).to(self.model.device, dtype=torch.bfloat16)
         print("Generate")
-        generated_ids = self.model.generate(**inputs, do_sample=False)
+        generated_ids = self.model.generate(
+            **inputs, do_sample=False, max_new_tokens=256
+        )
         print("Decode")
         generated_texts = self.processor.batch_decode(
             generated_ids,
